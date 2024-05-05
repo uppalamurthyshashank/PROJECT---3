@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D3.js Pie Chart</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      background-color: #dee2e6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="pieChart"></div>
+
+  <script>
+    // Sample data
+    const jsonData = [
+      { Title: 'Film A', Popularity: 80 },
+      { Title: 'Film B', Popularity: 60 },
+      { Title: 'Film C', Popularity: 40 },
+      { Title: 'Film D', Popularity: 20 }
+    ];
+
+    // Set up SVG dimensions
+    const width = 800;
+    const height = 600;
+    const radius = Math.min(width, height) / 2;
+
+    // Create an SVG element
+    const svg = d3.select('#pieChart')
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height)
+      .append('g')
+      .attr('transform', `translate(${width / 2}, ${height / 2})`);
+
+    // Create a pie layout
+    const pie = d3.pie().value(d => d.Popularity);
+
+    // Generate arc paths
+    const arc = d3.arc()
+      .innerRadius(0)
+      .outerRadius(radius);
+
+    // Create pie slices
+    const slices = svg.selectAll('path')
+      .data(pie(jsonData))
+      .enter()
+      .append('path')
+      .attr('d', arc)
+      .attr('fill', (d, i) => ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'][i]);
+
+    // Add labels (optional)
+    slices.append('text')
+      .attr('transform', d => `translate(${arc.centroid(d)})`)
+      .attr('dy', '0.35em')
+      .text(d => d.data.Title);
+
+    // Add a title
+    svg.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('dy', '-1em')
+      .text('Film Popularity');
+  </script>
+</body>
+</html> 
